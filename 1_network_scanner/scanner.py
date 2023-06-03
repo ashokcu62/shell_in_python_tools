@@ -1,5 +1,19 @@
 import scapy.all as scapy
 import re
+from optparse import OptionParser
+
+
+
+def get_options():
+    parser = OptionParser()
+    parser.add_option("-i", "--ip", dest="ip",
+                      help="enter ip or ip with range", metavar="FILE")
+    
+    (options, args) = parser.parse_args()
+    if not options.ip :
+        parser.error("[-] please specify an interface , --help for more info")
+    return options.ip
+
 def scan(ip):
     arp_request=scapy.ARP(pdst=ip)
     broadcast=scapy.Ether(dst="ff:ff:ff:ff:ff:ff")
@@ -22,6 +36,10 @@ def show(client_list):
         print(client["ip"]+"\t\t"+client["mac"])
         print("-"*70)
 
+# ------------------SCANNER-------------------------------
+def scanner():
+    ip=get_options()
+    clients=scan(ip)
+    show(clients)
 
-a=scan("192.168.199.0/24")
-show(a)
+scanner()
